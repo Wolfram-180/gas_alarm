@@ -1,8 +1,13 @@
 # pip3 install opencv-python
 # pip install numpy
+# pip install requests
 import cv2
 import numpy as np
 import time
+import sqlite3
+from safe_bot_token import bot_token
+import requests
+from time import sleep
 
 cameraIndex = 0  # 0 for laptop webcam, 1 for external webcam
 saving = False  # save the image (True) or not, only show (False)
@@ -64,7 +69,7 @@ def main():
                 cv2.imwrite(timestr + '_lvl_' + lvl + '.png', img_rgb)
                 txt = ('POLLUTION LVL ' + lvl)
                 print(txt)
-                telegram_alarm(txt)
+                telegram_alarm(lvl)
                 webcam.release()
                 cv2.destroyAllWindows()
                 break
@@ -81,9 +86,26 @@ def main():
             break
 
 
-def telegram_alarm(message):
-    pass
-    # send message to bot, which will than be sent to all subscribed users
+def telegram_alarm(lvl):
+    conn = sqlite3.connect("user_info.db")
+
+    cursor = conn.cursor()
+    cursor.execute("""CREATE TABLE IF NOT EXISTS user(
+        id INTEGER
+        )""")
+    conn.commit()
+
+    cursor.execute(f"SELECT id FROM user")
+    data = cursor.fetchall()
+
+    alarm = f'Внимание! В Видном произошло загрязнение воздуха! Уровень {lvl} из 6'
+
+    for i in range(0, 5):
+        for chatId in data:
+            bot_send_link = f'https://api.telegram.org/bot{bot_token}/sendMessage?chat_id={chatId[0]}&text={alarm}'
+            requests.get(bot_send_link)
+            print(bot_send_link)
+            sleep(3)
 
 
 main()

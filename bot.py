@@ -80,23 +80,6 @@ async def send_showdb(message: types.Message):
         await message.answer(i)
 
 
-@dp.message_handler(commands=['notifybydb'])
-async def send_notifybydb(message: types.Message):
-    conn = sqlite3.connect("user_info.db")
-
-    cursor = conn.cursor()
-    cursor.execute("""CREATE TABLE IF NOT EXISTS user(
-        id INTEGER
-        )""")
-    conn.commit()
-
-    cursor.execute(f"SELECT id FROM user")
-    data = cursor.fetchall()
-
-    for i in data:
-        await message.answer(i)
-
-
 @dp.message_handler()
 async def echo(message: types.Message):
     await message.reply('Введите команду /join чтобы получать уведомления о загрязнении воздуха в Видном или /exit чтобы отписаться\n')
