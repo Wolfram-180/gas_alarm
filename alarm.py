@@ -18,9 +18,10 @@ while True:
 
         cv2.imshow("Capturing", frame)
 
-        # cv2.imwrite(filename=camimg, img=frame) # no need to save file
+        cv2.imwrite(filename=camimg, img=frame)  # no need to save file
+        img_rgb = cv2.imread(camimg)  # no need to read un-saved file
 
-        img_rgb = cv2.imread(camimg)
+        # img_rgb = frame
 
         template = cv2.imread('p5-1.png')
         w, h = template.shape[:-1]
