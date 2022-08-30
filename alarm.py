@@ -22,6 +22,8 @@ match_threshold = 0.83
 init_start_delay_sec = 3.0
 pause_sec_camera = 1.235
 detect_img = ''
+end_if_found = False
+sleep_if_found_sec = 30
 
 
 def webcam_read(webcam):
@@ -80,9 +82,13 @@ def main():
 
                 telegram_alarm(lvl)
 
-                webcam.release()
-                cv2.destroyAllWindows()
-                break
+                if end_if_found:
+                    webcam.release()
+                    cv2.destroyAllWindows()
+                    break
+                else:
+                    print('Sleeping for ' + str(sleep_if_found_sec) + ' seconds')
+                    sleep(sleep_if_found_sec)
 
             key = cv2.waitKey(1)
             if key == ord('q'):
