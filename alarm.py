@@ -1,3 +1,5 @@
+# pip3 install opencv-python
+# pip install numpy
 import cv2
 import numpy as np
 import time
@@ -5,6 +7,8 @@ import time
 cameraIndex = 0  # 0 for laptop webcam, 1 for external webcam
 saving = False  # save the image (True) or not, only show (False)
 looking = True
+
+# https://api.telegram.org/bot5469207488:AAErlmUh1eUV7GTC9v2y3AuNkEHbpR2s1lU/sendMessage?chat_id=5469207488&text='Alarm'
 
 
 def webcam_read(webcam):
@@ -30,8 +34,7 @@ def is_found(img_rgb, template_file):
             img_rgb, pt, (pt[0] + w, pt[1] + h), (0, 0, 255), 2)
     return found, img_rgb, template_file[0]
 
-def telegram_alarm():
-    pass
+
 
 def main():
     webcam = cv2.VideoCapture(cameraIndex)
@@ -62,7 +65,9 @@ def main():
 
             if found == True:
                 cv2.imwrite(timestr + '_lvl_' + lvl + '.png', img_rgb)
-                print('=== POLLUTION LVL ' + lvl)
+                txt = ('POLLUTION LVL ' + lvl)
+                print(txt)
+                telegram_alarm(txt)
                 webcam.release()
                 cv2.destroyAllWindows()
                 break
@@ -78,5 +83,8 @@ def main():
             cv2.destroyAllWindows()
             break
 
+def telegram_alarm(message):
+    pass
+    # send message to bot, which will than be sent to all subscribed users
 
 main()
