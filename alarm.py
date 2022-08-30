@@ -8,22 +8,24 @@ from safe_bot_token import bot_token
 import requests
 from time import sleep
 
-detection_images = ['5-1.png', '5-2.png', '5-3.png', '5-4.png',
-                    '5-5.png', '5-6.png', '5-7.png', '5-8.png',
-                    '6-1.png', '6-2.png', '6-3.png', '6-4.png',
-                    '6-5.png', '6-6.png', '6-7.png', '6-8.png', ]
+detection_images = ['5-1.png',  # '5-2.png', '5-3.png', '5-4.png',
+                    #'5-5.png', '5-6.png', '5-7.png', '5-8.png',
+                    '6-1.png',
+                    #'6-2.png', '6-3.png', '6-4.png',
+                    #'6-5.png', '6-6.png', '6-7.png', '6-8.png',
+                    ]
 
 cameraIndex = 0  # 0 for laptop webcam, 1 for external webcam
-saving = True  # save the image (True) or not, only show (False)
+saving = False  # save the image (True) or not, only show (False)
 looking = True
 tele_message_count = 5
 tele_message_delay_sec = 3
-match_threshold = 0.83
+match_threshold = 0.8
 init_start_delay_sec = 3.0
 pause_sec_camera = 1.235
 detect_img = ''
 end_if_found = False
-sleep_if_found_sec = 1
+sleep_if_found_sec = 15
 
 
 def webcam_read(webcam):
