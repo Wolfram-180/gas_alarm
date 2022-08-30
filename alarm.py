@@ -11,7 +11,7 @@ from time import sleep
 detection_images = ['5-1.png', '5-2.png', '5-3.png', '5-4.png', 
                     '6-1.png', '6-2.png', '6-3.png', '6-4.png', ]
 cameraIndex = 0  # 0 for laptop webcam, 1 for external webcam
-saving = False  # save the image (True) or not, only show (False)
+saving = True  # save the image (True) or not, only show (False)
 looking = True
 tele_message_count = 5
 tele_message_delay_sec = 3
