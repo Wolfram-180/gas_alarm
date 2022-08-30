@@ -1,6 +1,7 @@
 from time import sleep
 import cv2
 import numpy as np
+import token
 
 img_rgb = cv2.imread('full_p5.png')
 template = cv2.imread('p5big.png')
