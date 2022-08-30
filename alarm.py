@@ -21,6 +21,7 @@ tele_message_delay_sec = 3
 match_threshold = 0.8
 init_start_delay_sec = 3.0
 pause_sec_camera = 0.75
+detect_img = ''
 
 
 def webcam_read(webcam):
@@ -44,7 +45,7 @@ def is_found(img_rgb, template_file):
         found = True
         cv2.rectangle(
             img_rgb, pt, (pt[0] + w, pt[1] + h), (0, 0, 255), 2)
-    return found, img_rgb, template_file[0]
+    return found, img_rgb, template_file[:2]
 
 
 def main():
@@ -69,10 +70,11 @@ def main():
             for detection_image in detection_images:
                 found, img_rgb, lvl = is_found(img_rgb, detection_image)
                 if found:
+                    detect_img = detection_image
                     break
 
             if found:
-                cv2.imwrite(timestr + '_lvl_' + lvl + '.png', img_rgb)
+                cv2.imwrite(timestr + '_lvl_' + detect_img, img_rgb)
                 txt = ('POLLUTION LVL ' + lvl)
                 print(txt)
 
