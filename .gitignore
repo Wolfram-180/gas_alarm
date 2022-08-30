@@ -3,3 +3,4 @@ user_info.db
 __pycache__/
 calibrate/
 result_yes.png
+.vscode/
