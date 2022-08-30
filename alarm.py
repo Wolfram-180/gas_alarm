@@ -8,7 +8,7 @@ from safe_bot_token import bot_token
 import requests
 from time import sleep
 
-cameraIndex = 0  # 0 for laptop webcam, 1 for external webcam
+cameraIndex = 1  # 0 for laptop webcam, 1 for external webcam
 saving = False  # save the image (True) or not, only show (False)
 looking = True
 
