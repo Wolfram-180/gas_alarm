@@ -14,7 +14,7 @@ detection_images = ['5-1.png', '5-2.png', '5-3.png', '5-4.png',
                     '6-5.png', '6-6.png', '6-7.png', '6-8.png', ]
 
 cameraIndex = 0  # 0 for laptop webcam, 1 for external webcam
-saving = False  # save the image (True) or not, only show (False)
+saving = True  # save the image (True) or not, only show (False)
 looking = True
 tele_message_count = 5
 tele_message_delay_sec = 3
@@ -23,7 +23,7 @@ init_start_delay_sec = 3.0
 pause_sec_camera = 1.235
 detect_img = ''
 end_if_found = False
-sleep_if_found_sec = 30
+sleep_if_found_sec = 1
 
 
 def webcam_read(webcam):
@@ -80,7 +80,7 @@ def main():
                 txt = ('POLLUTION LVL ' + lvl)
                 print(txt)
 
-                telegram_alarm(lvl)
+              #  telegram_alarm(lvl)
 
                 if end_if_found:
                     webcam.release()
