@@ -8,16 +8,22 @@ from safe_bot_token import bot_token
 import requests
 from time import sleep
 
+detection_images = ['5-1.png', '5-2.png', '5-3.png', '5-4.png', 
+                    '6-1.png', '6-2.png', '6-3.png', '6-4.png', ]
 cameraIndex = 0  # 0 for laptop webcam, 1 for external webcam
-saving = False  # save the image (True) or not, only show (False)
+saving = True  # save the image (True) or not, only show (False)
 looking = True
-
+tele_message_count = 5
+tele_message_delay_sec = 3
+match_threshold = 0.8
+init_start_delay_sec = 3.0
+pause_sec_camera = 0.75
 
 def webcam_read(webcam):
     check, frame = webcam.read()
     print(check)
     print(frame)
-    time.sleep(0.5)
+    time.sleep(pause_sec_camera)
     cv2.imshow("Capturing", frame)
     return check, frame
 
@@ -28,7 +34,7 @@ def is_found(img_rgb, template_file):
     found = False
 
     res = cv2.matchTemplate(img_rgb, template, cv2.TM_CCOEFF_NORMED)
-    threshold = .8
+    threshold = match_threshold
     loc = np.where(res >= threshold)
     for pt in zip(*loc[::-1]):
         found = True
@@ -39,10 +45,8 @@ def is_found(img_rgb, template_file):
 
 def main():
     webcam = cv2.VideoCapture(cameraIndex)
-
     webcam_read(webcam)
-
-    time.sleep(3)
+    time.sleep(init_start_delay_sec)
 
     while looking:
         try:
@@ -58,17 +62,18 @@ def main():
             else:
                 img_rgb = frame
 
-            if not found:
-                found, img_rgb, lvl = is_found(img_rgb, '5-1.png')
+            for detection_image in detection_images:
+                found, img_rgb, lvl = is_found(img_rgb, detection_image)
+                if found:
+                    break
 
-            if not found:
-                found, img_rgb, lvl = is_found(img_rgb, '6-1.png')
-
-            if found == True:
+            if found:
                 cv2.imwrite(timestr + '_lvl_' + lvl + '.png', img_rgb)
                 txt = ('POLLUTION LVL ' + lvl)
                 print(txt)
+
                 telegram_alarm(lvl)
+
                 webcam.release()
                 cv2.destroyAllWindows()
                 break
@@ -99,12 +104,12 @@ def telegram_alarm(lvl):
 
     alarm = f'Внимание! В Видном произошло загрязнение воздуха! Уровень {lvl} из 6'
 
-    for i in range(0, 5):
+    for i in range(0, tele_message_count):
         for chatId in data:
             bot_send_link = f'https://api.telegram.org/bot{bot_token}/sendMessage?chat_id={chatId[0]}&text={alarm}'
             requests.get(bot_send_link)
             print(bot_send_link)
-            sleep(3)
+            sleep(tele_message_delay_sec)
 
 
 main()
