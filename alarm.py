@@ -18,9 +18,9 @@ saving = False  # save the image (True) or not, only show (False)
 looking = True
 tele_message_count = 5
 tele_message_delay_sec = 3
-match_threshold = 0.8
+match_threshold = 0.83
 init_start_delay_sec = 3.0
-pause_sec_camera = 0.75
+pause_sec_camera = 1.235
 detect_img = ''
 
 
