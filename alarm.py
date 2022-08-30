@@ -17,10 +17,22 @@ while True:
         sleep(1.5)
 
         cv2.imshow("Capturing", frame)
-        cv2.imwrite(filename=camimg, img=frame)
+
+        # cv2.imwrite(filename=camimg, img=frame) # no need to save file
 
         img_rgb = cv2.imread(camimg)
-        template = cv2.imread('p5-4.png')
+
+        template = cv2.imread('p5-1.png')
+        w, h = template.shape[:-1]
+
+        res = cv2.matchTemplate(img_rgb, template, cv2.TM_CCOEFF_NORMED)
+        threshold = .8
+        loc = np.where(res >= threshold)
+        for pt in zip(*loc[::-1]):
+            found = True
+            cv2.rectangle(img_rgb, pt, (pt[0] + w, pt[1] + h), (0, 0, 255), 2)
+
+        template = cv2.imread('p6-1.png')
         w, h = template.shape[:-1]
 
         res = cv2.matchTemplate(img_rgb, template, cv2.TM_CCOEFF_NORMED)
@@ -35,6 +47,7 @@ while True:
             print('========= FOUND =========')
             webcam.release()
             cv2.destroyAllWindows()
+            break
 
         key = cv2.waitKey(1)
         if key == ord('q'):
@@ -43,9 +56,6 @@ while True:
             break
 
     except (KeyboardInterrupt):
-        print("Turning off camera.")
         webcam.release()
-        print("Camera off.")
-        print("Program ended.")
         cv2.destroyAllWindows()
         break
