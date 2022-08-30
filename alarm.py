@@ -1,5 +1,4 @@
 # pip3 install opencv-python
-# pip install numpy
 # pip install requests
 import cv2
 import numpy as np

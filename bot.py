@@ -1,5 +1,4 @@
 # pip install aiogram
-# pip install sqlite3
 from safe_bot_token import bot_token
 import logging
 import sqlite3
