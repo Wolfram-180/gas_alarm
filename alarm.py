@@ -1,66 +1,82 @@
-from time import sleep
 import cv2
 import numpy as np
 import time
 
-webcam = cv2.VideoCapture(1)
+cameraIndex = 0  # 0 for laptop webcam, 1 for external webcam
+saving = False  # save the image (True) or not, only show (False)
+looking = True
 
-sleep(3)
 
-while True:
-    try:
-        timestr = time.strftime("%Y%m%d-%H%M%S")
-        camimg = timestr + '.png'
-        found = False
-        saving = False
-        check, frame = webcam.read()
-        print(check)
-        print(frame)
+def webcam_read(webcam):
+    check, frame = webcam.read()
+    print(check)
+    print(frame)
+    time.sleep(0.5)
+    cv2.imshow("Capturing", frame)
+    return check, frame
 
-        sleep(0.5)
 
-        cv2.imshow("Capturing", frame)
+def is_found(img_rgb, template_file):
+    template = cv2.imread(template_file)
+    w, h = template.shape[:-1]
+    found = False
 
-        if saving:
-            cv2.imwrite(filename=camimg, img=frame)  # no need to save file
-            img_rgb = cv2.imread(camimg)  # no need to read un-saved file
-        else:
-            img_rgb = frame
+    res = cv2.matchTemplate(img_rgb, template, cv2.TM_CCOEFF_NORMED)
+    threshold = .8
+    loc = np.where(res >= threshold)
+    for pt in zip(*loc[::-1]):
+        found = True
+        cv2.rectangle(
+            img_rgb, pt, (pt[0] + w, pt[1] + h), (0, 0, 255), 2)
+    return found, img_rgb, template_file[0]
 
-        template = cv2.imread('5-1.png')
-        w, h = template.shape[:-1]
+def telegram_alarm():
+    pass
 
-        res = cv2.matchTemplate(img_rgb, template, cv2.TM_CCOEFF_NORMED)
-        threshold = .8
-        loc = np.where(res >= threshold)
-        for pt in zip(*loc[::-1]):
-            found = True
-            cv2.rectangle(img_rgb, pt, (pt[0] + w, pt[1] + h), (0, 0, 255), 2)
+def main():
+    webcam = cv2.VideoCapture(cameraIndex)
 
-        template = cv2.imread('6-1.png')
-        w, h = template.shape[:-1]
+    webcam_read(webcam)
 
-        res = cv2.matchTemplate(img_rgb, template, cv2.TM_CCOEFF_NORMED)
-        threshold = .8
-        loc = np.where(res >= threshold)
-        for pt in zip(*loc[::-1]):
-            found = True
-            cv2.rectangle(img_rgb, pt, (pt[0] + w, pt[1] + h), (0, 0, 255), 2)
+    time.sleep(3)
 
-        if found == True:
-            cv2.imwrite('result_yes.png', img_rgb)
-            print('========= FOUND =========')
+    while looking:
+        try:
+            timestr = time.strftime("%Y%m%d-%H%M%S")
+            camimg = timestr + '.png'
+            found = False
+
+            check, frame = webcam_read(webcam)
+
+            if saving:
+                cv2.imwrite(filename=camimg, img=frame)  # no need to save file
+                img_rgb = cv2.imread(camimg)  # no need to read un-saved file
+            else:
+                img_rgb = frame
+
+            if not found:
+                found, img_rgb, lvl = is_found(img_rgb, '5-1.png')
+
+            if not found:
+                found, img_rgb, lvl = is_found(img_rgb, '6-1.png')
+
+            if found == True:
+                cv2.imwrite(timestr + '_lvl_' + lvl + '.png', img_rgb)
+                print('=== POLLUTION LVL ' + lvl)
+                webcam.release()
+                cv2.destroyAllWindows()
+                break
+
+            key = cv2.waitKey(1)
+            if key == ord('q'):
+                webcam.release()
+                cv2.destroyAllWindows()
+                break
+
+        except (KeyboardInterrupt):
             webcam.release()
             cv2.destroyAllWindows()
             break
 
-        key = cv2.waitKey(1)
-        if key == ord('q'):
-            webcam.release()
-            cv2.destroyAllWindows()
-            break
 
-    except (KeyboardInterrupt):
-        webcam.release()
-        cv2.destroyAllWindows()
-        break
+main()
