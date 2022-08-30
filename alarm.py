@@ -5,25 +5,29 @@ import time
 
 webcam = cv2.VideoCapture(1)
 
+sleep(3)
+
 while True:
     try:
         timestr = time.strftime("%Y%m%d-%H%M%S")
         camimg = timestr + '.png'
         found = False
+        saving = False
         check, frame = webcam.read()
         print(check)
         print(frame)
 
-        sleep(1.5)
+        sleep(0.5)
 
         cv2.imshow("Capturing", frame)
 
-        cv2.imwrite(filename=camimg, img=frame)  # no need to save file
-        img_rgb = cv2.imread(camimg)  # no need to read un-saved file
+        if saving:
+            cv2.imwrite(filename=camimg, img=frame)  # no need to save file
+            img_rgb = cv2.imread(camimg)  # no need to read un-saved file
+        else:
+            img_rgb = frame
 
-        # img_rgb = frame
-
-        template = cv2.imread('p5-1.png')
+        template = cv2.imread('5-1.png')
         w, h = template.shape[:-1]
 
         res = cv2.matchTemplate(img_rgb, template, cv2.TM_CCOEFF_NORMED)
@@ -33,7 +37,7 @@ while True:
             found = True
             cv2.rectangle(img_rgb, pt, (pt[0] + w, pt[1] + h), (0, 0, 255), 2)
 
-        template = cv2.imread('p6-1.png')
+        template = cv2.imread('6-1.png')
         w, h = template.shape[:-1]
 
         res = cv2.matchTemplate(img_rgb, template, cv2.TM_CCOEFF_NORMED)
