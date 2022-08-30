@@ -45,7 +45,7 @@ def is_found(img_rgb, template_file):
         found = True
         cv2.rectangle(
             img_rgb, pt, (pt[0] + w, pt[1] + h), (0, 0, 255), 2)
-    return found, img_rgb, template_file[:2]
+    return found, img_rgb, template_file[:3]
 
 
 def main():
