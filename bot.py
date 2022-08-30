@@ -18,7 +18,7 @@ dp = Dispatcher(bot)
 
 @dp.message_handler(commands=['start', 'help'])
 async def send_start(message: types.Message):
-    await message.answer("Hi there, I will notify you by high air pollution level in Vidnoe. Use /join command to subscribe for notifications or /exit to unsubscribe from them\n")
+    # await message.answer("Hi there, I will notify you by high air pollution level in Vidnoe. Use /join command to subscribe for notifications or /exit to unsubscribe from them\n")
     await message.answer("Привет, я буду сообщать о загрязнении воздуха в Видном. Введите команду /join чтобы получать уведомления или /exit чтобы отписаться\n")
 
 
@@ -83,7 +83,7 @@ async def send_showdb(message: types.Message):
 @dp.message_handler()
 async def echo(message: types.Message):
     await message.reply('Введите команду /join чтобы получать уведомления о загрязнении воздуха в Видном или /exit чтобы отписаться\n')
-    await message.reply('Use /join command to subscribe for Vidnoe air pollution notifications or /exit to unsubscribe from them')
+    # await message.reply('Use /join command to subscribe for Vidnoe air pollution notifications or /exit to unsubscribe from them')
 
 
 if __name__ == '__main__':
