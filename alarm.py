@@ -82,7 +82,7 @@ def main():
                 txt = ('POLLUTION LVL ' + lvl)
                 print(txt)
 
-              #  telegram_alarm(lvl)
+                telegram_alarm(lvl)
 
                 if end_if_found:
                     webcam.release()
