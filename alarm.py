@@ -1,5 +1,6 @@
 # pip3 install opencv-python
 # pip install requests
+import datetime
 import cv2
 import numpy as np
 import time
@@ -10,17 +11,23 @@ from time import sleep
 
 detection_images = ['5.png', '6.png', ]
 
-cameraIndex = 0  # 0 for laptop webcam, 1 for external webcam
+match_threshold = 0.96 # matching threshold, 1 - perfect match, <1 - less strict
+
+looking = True # true to check camera at all
 saving = False  # save the image (True) or not, only show (False)
-looking = True
-tele_message_count = 5
-tele_message_delay_sec = 3
-match_threshold = 0.96
-init_start_delay_sec = 3.0
-pause_sec_camera = 1.3
-detect_img = ''
-end_if_found = False
-sleep_if_found_sec = 3
+
+cameraIndex = 0  # 0 for laptop webcam, 1 for external webcam
+tele_message_count = 5 # count of warning messages to telegram
+tele_message_delay_sec = 3 # delay between warning messages to telegram
+init_start_delay_sec = 3.0 # delay before start
+pause_sec_camera = 1.12 # frequency of checking the camera
+end_if_found = False # end script if warning detected
+sleep_if_found_sec = 3 # script sleep if warning detected
+alarms_detected = 'alarms_detected' # folder for screenshots of alarms detected
+
+control_work_time = False # control work time : hr_work_from <-> hr_work_to
+hr_work_from = 0
+hr_work_to = 7
 
 
 def webcam_read(webcam):
@@ -44,7 +51,7 @@ def is_found(img_rgb, template_file):
         found = True
         cv2.rectangle(
             img_rgb, pt, (pt[0] + w, pt[1] + h), (0, 0, 255), 2)
-    return found, img_rgb, template_file[:3]
+    return found, img_rgb, template_file[0]
 
 
 def main():
@@ -52,8 +59,14 @@ def main():
     webcam_read(webcam)
     time.sleep(init_start_delay_sec)
 
-    while looking:
+    now = datetime.datetime.now()
+
+    while looking :
         try:
+            if control_work_time:
+                if not (hr_work_from <= now.hour <= hr_work_to):
+                    continue
+
             timestr = time.strftime("%Y%m%d-%H%M%S")
             camimg = timestr + '.png'
             found = False
@@ -62,9 +75,9 @@ def main():
 
             if saving:
                 cv2.imwrite(filename=camimg, img=frame)  # no need to save file
-                img_rgb = cv2.imread(camimg)  # no need to read un-saved file
-            else:
-                img_rgb = frame
+#                img_rgb = cv2.imread(camimg)  # no need to read un-saved file
+#            else:
+            img_rgb = frame
 
             for detection_image in detection_images:
                 found, img_rgb, lvl = is_found(img_rgb, detection_image)
@@ -73,7 +86,8 @@ def main():
                     break
 
             if found:
-                cv2.imwrite(timestr + '_lvl_' + detect_img, img_rgb)
+                alarms_detected_full_path = alarms_detected + '/' + timestr + '_lvl_' + detect_img
+                cv2.imwrite(alarms_detected_full_path, img_rgb)
                 txt = ('POLLUTION LVL ' + lvl)
                 print(txt)
 
@@ -111,7 +125,7 @@ def telegram_alarm(lvl):
     cursor.execute(f"SELECT id FROM user")
     data = cursor.fetchall()
 
-    alarm = f'Внимание! В Видном произошло загрязнение воздуха! Уровень {lvl} из 6'
+    alarm = f'Pollution level detected: {lvl} of 6'
 
     for i in range(0, tele_message_count):
         for chatId in data:
