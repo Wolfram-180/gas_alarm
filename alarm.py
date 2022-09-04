@@ -1,5 +1,6 @@
 # pip3 install opencv-python
 # pip install requests
+# pip install pillow
 import datetime
 import cv2
 import numpy as np
@@ -8,10 +9,12 @@ import sqlite3
 from safe_bot_token import bot_token
 import requests
 from time import sleep
+import io
+from PIL import Image
 
 detection_images = ['5.png', '6.png', ]
 
-match_threshold = 0.96 # matching threshold, 1 - perfect match, <1 - less strict
+match_threshold = 0.93 # matching threshold, 1 - perfect match, <1 - less strict
 
 looking = True # true to check camera at all
 saving = False  # save the image (True) or not, only show (False)
@@ -50,7 +53,7 @@ def is_found(img_rgb, template_file):
     for pt in zip(*loc[::-1]):
         found = True
         cv2.rectangle(
-            img_rgb, pt, (pt[0] + w, pt[1] + h), (0, 0, 255), 2)
+            img_rgb, pt, (pt[0] + h, pt[1] + w), (0, 0, 255), 2)
     return found, img_rgb, template_file[0]
 
 
@@ -75,8 +78,7 @@ def main():
 
             if saving:
                 cv2.imwrite(filename=camimg, img=frame)  # no need to save file
-#                img_rgb = cv2.imread(camimg)  # no need to read un-saved file
-#            else:
+
             img_rgb = frame
 
             for detection_image in detection_images:
@@ -91,7 +93,7 @@ def main():
                 txt = ('POLLUTION LVL ' + lvl)
                 print(txt)
 
-                telegram_alarm(lvl)
+                telegram_alarm(lvl, alarms_detected_full_path)
 
                 if end_if_found:
                     webcam.release()
@@ -113,7 +115,11 @@ def main():
             break
 
 
-def telegram_alarm(lvl):
+def get_link(bot_token, msgtp, chatId, alarm):
+    return f'https://api.telegram.org/bot{bot_token}/send{msgtp}?chat_id={chatId}&text={alarm}'
+
+
+def telegram_alarm(lvl, alarms_detected_full_path):
     conn = sqlite3.connect("user_info.db")
 
     cursor = conn.cursor()
@@ -127,11 +133,26 @@ def telegram_alarm(lvl):
 
     alarm = f'Pollution level detected: {lvl} of 6'
 
-    for i in range(0, tele_message_count):
-        for chatId in data:
-            bot_send_link = f'https://api.telegram.org/bot{bot_token}/sendMessage?chat_id={chatId[0]}&text={alarm}'
-            requests.get(bot_send_link)
+    img = Image.open(alarms_detected_full_path)
+
+    # save image in memory
+    img_bytes = io.BytesIO()
+    img.save(img_bytes, format="PNG")
+    img_bytes.seek(0)
+
+    files = {"photo": img_bytes}
+
+    for chatId in data:
+        file_sent = False
+        for i in range(0, tele_message_count):
+            if not file_sent:
+                bot_send_link = get_link(bot_token, chatId[0], 'Photo', alarm)
+                print(bot_send_link)
+                requests.post(bot_send_link, files=files)
+                file_sent = True
+            bot_send_link = get_link(bot_token, chatId[0], 'Message', alarm)
             print(bot_send_link)
+            requests.post(bot_send_link)
             sleep(tele_message_delay_sec)
 
 
