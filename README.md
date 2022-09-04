@@ -24,3 +24,9 @@ Capturing cript and bot are running 24x7, but controller set up at kitchen and s
 
 =====================================
 
+# Расположение \ Location
+
+![](https://github.com/Wolfram-180/gas_alarm/blob/master/environment/wall1.jpg?raw=true)
+![](https://github.com/Wolfram-180/gas_alarm/blob/master/environment/wall2.jpg?raw=true)
+
+
