@@ -1,3 +1,6 @@
 # gas_alarm
 
-Script monitoring air pollution control device - and send notifications to Telegram bot in case of high (5-6) pollution level.
+Purpose: 
+- script monitoring indications of air pollution control device 
+- use of OpenCV to detect red ones (grades 5 and 6) and send notifications to Telegram bot
+- Telegram bot provides user subscribe / unsubscribe service, sending 5-6 grades notifications to subscribed users
