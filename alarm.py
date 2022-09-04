@@ -68,6 +68,9 @@ def main():
         try:
             if control_work_time:
                 if not (hr_work_from <= now.hour <= hr_work_to):
+                    for i in range(0, 60):
+                        print(f'Not work time, sleep {i} of 60')
+                        sleep(1)
                     continue
 
             timestr = time.strftime("%Y%m%d-%H%M%S")
