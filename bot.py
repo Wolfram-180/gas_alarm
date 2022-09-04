@@ -17,14 +17,12 @@ dp = Dispatcher(bot)
 
 @dp.message_handler(commands=['start', 'help'])
 async def send_start(message: types.Message):
-    # await message.answer("Hi there, I will notify you by high air pollution level in Vidnoe. Use /join command to subscribe for notifications or /exit to unsubscribe from them\n")
-    await message.answer("Привет, я буду сообщать о загрязнении воздуха в Видном. Введите команду /join чтобы получать уведомления или /exit чтобы отписаться\n")
+    await message.answer("Hi there, that bot will notify you by air pollution in Vidnoe. Use /join command to subscribe for notifications or /exit to unsubscribe from them\n")
+    await message.answer("Привет, этот бот будет сообщать о загрязнении воздуха в Видном. Введите команду /join чтобы получать уведомления или /exit чтобы отписаться\n")
 
 
 @dp.message_handler(commands=['join'])
 async def send_join(message: types.Message):
-    await message.answer("Добавляем в БД уведомлений о загрязнении воздуха в Видном\n")
-
     conn = sqlite3.connect("user_info.db")
 
     cursor = conn.cursor()
@@ -39,14 +37,14 @@ async def send_join(message: types.Message):
         cursor.execute(f"INSERT INTO user (id) VALUES ({userid})")
         conn.commit()
 
-    await message.answer("Вы добавлены в БД уведомлений о загрязнении воздуха в Видном\n")
-    await message.answer('Введите команду /exit чтобы отписаться\n')
+    await message.answer("You subscribed for notifications to be informed on air pollution in Vidnoe\n")
+    await message.answer("Вы подписаны на уведомления о загрязнении воздуха в Видном\n")
+    await message.answer('Send /exit command to unsubscribe\n')
+    await message.answer('Введите команду /exit если захотите отписаться\n')
 
 
 @dp.message_handler(commands=['exit'])
 async def send_exit(message: types.Message):
-    await message.answer("Убираем из БД уведомлений о загрязнении воздуха в Видном\n")
-
     conn = sqlite3.connect("user_info.db")
 
     cursor = conn.cursor()
@@ -58,8 +56,10 @@ async def send_exit(message: types.Message):
     cursor.execute(f"DELETE FROM user WHERE id = {userid}")
     conn.commit()
 
-    await message.answer("Вы удалены из БД уведомлений о загрязнении воздуха в Видном\n")
-    await message.answer('Введите команду /join чтобы подписаться\n')
+    await message.answer("You unsubscribed for notifications on air pollution in Vidnoe\n")
+    await message.answer("Вы отписаны от уведомлений о загрязнении воздуха в Видном\n")
+    await message.answer('Send /join command to subscribe\n')
+    await message.answer('Введите команду /join чтобы подписаться\n')    
 
 
 @dp.message_handler(commands=['showdb'])
@@ -81,8 +81,7 @@ async def send_showdb(message: types.Message):
 
 @dp.message_handler()
 async def echo(message: types.Message):
-    await message.reply('Введите команду /join чтобы получать уведомления о загрязнении воздуха в Видном или /exit чтобы отписаться\n')
-    # await message.reply('Use /join command to subscribe for Vidnoe air pollution notifications or /exit to unsubscribe from them')
+    send_start(message)
 
 
 if __name__ == '__main__':

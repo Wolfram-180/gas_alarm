@@ -38,7 +38,7 @@ def webcam_read(webcam):
     print(check)
     print(frame)
     time.sleep(pause_sec_camera)
-    cv2.imshow("Capturing", frame)
+    cv2.imshow("Capturing / Наблюдение", frame)
     return check, frame
 
 
@@ -77,7 +77,7 @@ def main():
             check, frame = webcam_read(webcam)
 
             if saving:
-                cv2.imwrite(filename=camimg, img=frame)  # no need to save file
+                cv2.imwrite(filename=camimg, img=frame)
 
             img_rgb = frame
 
@@ -90,7 +90,7 @@ def main():
             if found:
                 alarms_detected_full_path = alarms_detected + '/' + timestr + '_lvl_' + detect_img
                 cv2.imwrite(alarms_detected_full_path, img_rgb)
-                txt = ('POLLUTION LVL ' + lvl)
+                txt = ('Pollution level / Уровень загрязнения: ' + lvl)
                 print(txt)
 
                 telegram_alarm(lvl, alarms_detected_full_path)
@@ -131,7 +131,7 @@ def telegram_alarm(lvl, alarms_detected_full_path):
     cursor.execute(f"SELECT id FROM user")
     data = cursor.fetchall()
 
-    alarm = f'Pollution level detected: {lvl} of 6'
+    alarm = f'Pollution level (6 is max) / Уровень загрязнения (6 макс):  {lvl}'
 
     img = Image.open(alarms_detected_full_path)
 
