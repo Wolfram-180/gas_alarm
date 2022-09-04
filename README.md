@@ -31,6 +31,8 @@ Capturing cript and bot are running 24x7, but controller set up at kitchen and s
 
 # Пример уведомления \ Notification example
 
-Telegram screenshot: notification includes photo with grade and several messages to make noise and wake up
+Скришнот Телеграма: сообщение включает фото с уровнем и несколько текстовых сообщений чтобы разбудить звуком уведомлений
+
+Telegram screenshot: notification includes photo with grade and several text messages to make noise and wake up
 
 ![](https://github.com/Wolfram-180/gas_alarm/blob/master/environment/5_lvl_detected.png?raw=true)
