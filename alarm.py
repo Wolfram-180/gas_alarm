@@ -14,21 +14,21 @@ from PIL import Image
 
 detection_images = ['5.png', '6.png', ]
 
-match_threshold = 0.93 # matching threshold, 1 - perfect match, <1 - less strict
+match_threshold = 0.93  # matching threshold, 1 - perfect match, <1 - less strict
 
-looking = True # true to check camera at all
+looking = True  # true to check camera at all
 saving = False  # save the image (True) or not, only show (False)
 
 cameraIndex = 0  # 0 for laptop webcam, 1 for external webcam
-tele_message_count = 5 # count of warning messages to telegram
-tele_message_delay_sec = 3 # delay between warning messages to telegram
-init_start_delay_sec = 3.0 # delay before start
-pause_sec_camera = 1.12 # frequency of checking the camera
-end_if_found = False # end script if warning detected
-sleep_if_found_sec = 3 # script sleep if warning detected
-alarms_detected = 'alarms_detected' # folder for screenshots of alarms detected
+tele_message_count = 5  # count of warning messages to telegram
+tele_message_delay_sec = 3  # delay between warning messages to telegram
+init_start_delay_sec = 3.0  # delay before start
+pause_sec_camera = 1.12  # frequency of checking the camera
+end_if_found = False  # end script if warning detected
+sleep_if_found_sec = 3  # script sleep if warning detected
+alarms_detected = 'alarms_detected'  # folder for screenshots of alarms detected
 
-control_work_time = True # control work time : hr_work_from <-> hr_work_to
+control_work_time = True  # control work time : hr_work_from <-> hr_work_to
 hr_work_from = 0
 hr_work_to = 7
 
@@ -38,7 +38,7 @@ def webcam_read(webcam):
     print(check)
     print(frame)
     time.sleep(pause_sec_camera)
-    cv2.imshow("Capturing / Наблюдение", frame)
+    cv2.imshow("Capturing", frame)
     return check, frame
 
 
@@ -64,12 +64,13 @@ def main():
 
     now = datetime.datetime.now()
 
-    while looking :
+    while looking:
         try:
             if control_work_time:
                 if not (hr_work_from <= now.hour <= hr_work_to):
                     for i in range(0, 60):
-                        print(f'Not work time, sleep {i} of 60')
+                        print(
+                            f'Out of control hours: now - {str(now.hour)}, control - from {str(hr_work_from)} to {str(hr_work_to)}; so let`s sleep {i} of 60')
                         sleep(1)
                     continue
 
@@ -91,7 +92,8 @@ def main():
                     break
 
             if found:
-                alarms_detected_full_path = alarms_detected + '/' + timestr + '_lvl_' + detect_img
+                alarms_detected_full_path = alarms_detected + \
+                    '/' + timestr + '_lvl_' + detect_img
                 cv2.imwrite(alarms_detected_full_path, img_rgb)
                 txt = ('Pollution level / Уровень загрязнения: ' + lvl)
                 print(txt)
