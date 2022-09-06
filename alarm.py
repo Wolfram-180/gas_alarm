@@ -62,9 +62,8 @@ def main():
     webcam_read(webcam)
     time.sleep(init_start_delay_sec)
 
-    now = datetime.datetime.now()
-
     while looking:
+        now = datetime.datetime.now()
         try:
             if control_work_time:
                 if not (hr_work_from <= now.hour <= hr_work_to):
