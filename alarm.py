@@ -28,7 +28,7 @@ end_if_found = False  # end script if warning detected
 sleep_if_found_sec = 3  # script sleep if warning detected
 alarms_detected = 'alarms_detected'  # folder for screenshots of alarms detected
 
-control_work_time = True  # control work time : hr_work_from <-> hr_work_to
+control_work_time = True # control work time : hr_work_from <-> hr_work_to
 hr_work_from = 0
 hr_work_to = 7
 
