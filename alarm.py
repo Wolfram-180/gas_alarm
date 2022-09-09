@@ -14,7 +14,7 @@ from PIL import Image
 
 detection_images = ['5.png', '6.png', ]
 
-match_threshold = 0.93  # matching threshold, 1 - perfect match, <1 - less strict
+match_threshold = 0.9  # matching threshold, 1 - perfect match, <1 - less strict
 
 looking = True  # true to check camera at all
 saving = False  # save the image (True) or not, only show (False)
