@@ -14,7 +14,7 @@ from PIL import Image
 
 detection_images = ['5.png', '6.png', ]
 
-match_threshold = 0.9  # matching threshold, 1 - perfect match, <1 - less strict
+match_threshold = 0.92  # matching threshold, 1 - perfect match, <1 - less strict
 
 looking = True  # true to check camera at all
 saving = False  # save the image (True) or not, only show (False)
@@ -30,7 +30,7 @@ alarms_detected = 'alarms_detected'  # folder for screenshots of alarms detected
 
 control_work_time = True # control work time : hr_work_from <-> hr_work_to
 hr_work_from = 0
-hr_work_to = 23
+hr_work_to = 7
 
 
 def webcam_read(webcam):
