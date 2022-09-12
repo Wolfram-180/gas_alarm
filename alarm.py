@@ -14,7 +14,7 @@ from PIL import Image
 
 detection_images = ['5.png', '6.png', ]
 
-match_threshold = 0.93  # matching threshold, 1 - perfect match, <1 - less strict
+match_threshold = 0.92  # matching threshold, 1 - perfect match, <1 - less strict
 
 looking = True  # true to check camera at all
 saving = False  # save the image (True) or not, only show (False)
@@ -28,7 +28,7 @@ end_if_found = False  # end script if warning detected
 sleep_if_found_sec = 3  # script sleep if warning detected
 alarms_detected = 'alarms_detected'  # folder for screenshots of alarms detected
 
-control_work_time = True  # control work time : hr_work_from <-> hr_work_to
+control_work_time = True # control work time : hr_work_from <-> hr_work_to
 hr_work_from = 0
 hr_work_to = 6
 
@@ -62,9 +62,8 @@ def main():
     webcam_read(webcam)
     time.sleep(init_start_delay_sec)
 
-    now = datetime.datetime.now()
-
     while looking:
+        now = datetime.datetime.now()
         try:
             if control_work_time:
                 if not (hr_work_from <= now.hour <= hr_work_to):
